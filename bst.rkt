@@ -121,16 +121,34 @@
 
 
 
-(define bst-from-list
-  (lambda(lst)
-    ;(define curentList '())
-    (if (null? lst) currentList)
-    (insert car lst)
-    (bst-from-list (cdr lst))
-   )
+;;(define bst-from-list)
+ ;; (lambda(lst)
+ ;;(define curentList '())
+    ;;(if (null? lst) currentList)
+    ;;(insert car lst)
+    ;;(bst-from-list (cdr lst))
+   ;;)
+ ;;)
+
+
+(define bst-from-list-helper
+  (lambda (lst)
+    (cond
+
+      ( (= 1 (length lst)) '() (list (car lst) '() '() ) )
+      (else (insert (car lst)  (bst-from-list-helper (cdr lst)) )
+            )
+      
+      
+    )
+  )
  )
 
-
+(define bst-from-list
+  (lambda (lst)
+    (bst-from-list-helper (reverse lst) )
+    )
+  )
 
 
 ( define x
