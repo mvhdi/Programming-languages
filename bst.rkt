@@ -121,7 +121,14 @@
 
 
 
-
+(define bst-from-list
+  (lambda(lst)
+    ;(define curentList '())
+    (if (null? lst) currentList)
+    (insert car lst)
+    (bst-from-list (cdr lst))
+   )
+ )
 
 
 
@@ -157,3 +164,5 @@ x
 (define y '(5 () () ) )
 (test y )
 (make-bst 5  '( 3 () () ) '( 7 () () )  )
+
+(bst-from-list '(1 2 3 4 5))
