@@ -1,24 +1,72 @@
+(define test
+  (lambda (bst)
+    (cond
+      ((equal? bst '())  #f)
+      
 
+     ;; ((equal?( (equal? (number? (car bst)) '(#t)) '(#t))) #t) (equal? (list?  (car (cdr  bst ))) '(#t) ) (equal? (list? (car(cdr (cdr bst))) ) '(#t) ) '(#t)) (#t) )
+      (       (not (= 3 (length  bst)) )  #f     )
+      
+     ;; (  (and  (> (car bst)  (car(car(cdr (cdr bst ) ) ) )  )    (< (car bst) (car (car (cdr  bst ) )) )    )      #f) possible checking if bst if correctly formated
+
+    
+     ( (and (number? (car bst)) (list? (car (cdr  bst ) ))  (list? (car(cdr (cdr bst))) )  ) #t  )
+     ;;((list? bst) #t)
+     (else #f)
+     )
+    )
+  )
+      
+       
+      
 
 ( define entry
   (lambda (currentList  )
-   (car currentList )   
-  )
-)
+    (cond
+      ( (not (test currentList ) ) #f)
+      (else (car currentList ) )
+     )
+   )
+ )
+
 
 ( define left 
   (lambda (currentList  )
-   
-   (car (cdr  currentList ) )
+    (cond
+      ( (not (test currentList ) ) #f)
+      (else (car (cdr  currentList ) ) )
+    )   
   )
 )
 
+
 ( define right 
   (lambda (currentList  )
-  
-   (car(cdr (cdr currentList ) ) )
+    (cond
+      ( (not (test currentList ) ) #f)
+      (else (car(cdr (cdr currentList ) ) ) )
+    )
   )
 )
+
+
+(define make-bst
+  (lambda (elt left right)
+    (define tree (list elt left right ))
+    (cond
+      ((test (list elt left right ) ) (list elt left right  ))
+      (else  #f)
+    )
+  )
+)
+    
+
+
+
+
+
+
+
 
 
  
@@ -61,6 +109,8 @@
     ;; if it hits a leaf, insert bst with the value as its only node
     ((equal? currentList '())   (list v '() '()) )
 
+    ((= v (entry currentList))   (list (car currentList)   (car (cdr currentList))    (car (cdr (cdr currentList)))))
+    
     ;;if bigger return a  list of the node, left side of the tree, and call insert on right side
     ((> v (entry currentList))   (list (car currentList)   (car (cdr currentList))   (insert v (car (cdr (cdr currentList))))))
 
@@ -91,7 +141,7 @@
 (inorder x)
 (postorder x)
 x
-(insert 6 x)
+(insert 43 x)
 
 ;; 5
 ;; (3 (12 () ()) (4 () (22 () ())))
@@ -101,3 +151,9 @@ x
 ;; (12 22 4 3 43 5)
 ;; (5 (3 (12 () ()) (4 () (22 () ()))) (43 () ()))
 ;; (5 (3 (12 () ()) (4 () (22 () ()))) (43 (6 () ()) ()))
+
+
+
+(define y '(5 () () ) )
+(test y )
+(make-bst 5  '( 3 () () ) '( 7 () () )  )
