@@ -87,7 +87,9 @@
       ( (= 1 (length lst)) '() (list (car lst) '() '() ) )
       (else (insert (car lst)  (bst-from-list-helper (cdr lst)) )))))
 
-;; checks if values in a list from an inorder traversal are in accending order. If so the list is an bst.
+;; checks if the number of integers in the list correctly match the number of parentheses,
+;; if so it then checks if  the values in a list from an inorder traversal are in accending order. If so the list is an bst.
+
 (define proper-tree? 
   (lambda (bst)
     (cond
