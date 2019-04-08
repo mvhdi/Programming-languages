@@ -136,6 +136,7 @@
     (cond
 
       ( (= 1 (length lst)) '() (list (car lst) '() '() ) )
+
       (else (insert (car lst)  (bst-from-list-helper (cdr lst)) )
             )
       
@@ -150,6 +151,41 @@
     )
   )
 
+
+(define propper-tree?
+  (lambda (bst)
+  
+
+    
+    (cond
+      ( (null? bst) #t)
+      ( (not(list? bst)) #f)
+      ( (not (= 3 (length  bst)))  #f)
+      ;; has no childern
+       ( (and  (equal? (entry (left bst))  '() )   (equal? (entry (right bst))  '() ))   #t )
+         ;; has left child only 
+      ( (and  (number? (entry (left bst)))  (equal? (entry (right bst))  '() )   (and (number? (entry bst))  (and (propper-tree? (left bst))  )) )
+        ;; has right child only 
+      ( (and  (number? (entry (right bst))) (equal? (entry (left bst))  '() ))   (and (number? (entry bst))   (propper-tree? (right bst)))) )
+      ;; has two childern
+      ( (and  (number? (entry (right bst))) (number? (entry (left bst))))     (and (number? (entry bst))  (and (propper-tree? (left bst))  (propper-tree? (right bst))))     )
+      
+    (else #f )))))
+
+
+
+(define correct-format
+  (lambda (bst)
+    
+      
+    
+      (and  (> (car bst)  (entry (left bst))  )    (< (car bst)  (entry (right bst)) )    )
+   )
+)
+  
+      
+      
+ 
 
 ( define x
    '(
@@ -183,4 +219,6 @@ x
 (test y )
 (make-bst 5  '( 3 () () ) '( 7 () () )  )
 
-(bst-from-list '(1 2 3 4 5))
+(bst-from-list '(4 10 2))
+
+(propper-tree? '(10 (22 () ()) ()))
