@@ -90,7 +90,9 @@
 ;; checks if values in a list from an inorder traversal are in accending order. If so the list is an bst.
 (define proper-tree? 
   (lambda (bst)
-    (acending-order? (inorder-test bst) )))
+    (cond
+     ( (correct-format-bst bst) (acending-order? (inorder-test bst) ) )
+     (else #f))))
 
 ;; helper function checks if values in list are in accending order
 (define (acending-order? bst)
@@ -100,7 +102,7 @@
         ((> (car (cdr bst)) (car bst)) (acending-order? (cdr bst)))
         (else #f)))
 
-;; returns list of values in bst from an inorder traversel 
+;; returns list of values in bst from an inorder traversel without checking format of bst
 ( define inorder-test
   (lambda (currentList  )
     (cond
@@ -109,8 +111,32 @@
       (else  (append  ( inorder (car (cdr  currentList ) ))    (list (entry currentList))    ( inorder (car(cdr (cdr currentList ) ) ) )) ))))
 
 
+;; checks if the number of parentheses are correct for the number of intergers in the list
+(define correct-format-bst
+  (lambda (bst)
+    (cond
+      ((equal? bst '()) #f)
+      ((= (/ (- (count-nulls bst) 1) 2) (count-integers bst)) #t)
+      (else #f))))
 
+;; counts the number of parentheses in the bst
+(define count-nulls
+  ( lambda (bst)
+     (cond
+       ((null? bst) 1)
+       ((integer? bst) 0)
+       ( (+ (count-nulls (car bst)) (count-nulls (cdr bst)))))))
 
+;; counts the number of integers in the list
+ (define count-integers
+  ( lambda (bst)
+     (length (remove-par bst ))))
+
+;; turns the bst into a list of integers
+(define (remove-par bst)
+  (cond ((null? bst) '())
+        ((pair? bst) (append (remove-par  (car bst)) (remove-par  (cdr bst))))
+        (else (list bst))))
 
 ;; -------------- TESTS --------------
 ( define x  '( 8 (3 (1 () () ) (6 (4 () () ) (7 () ()) ) ) (10 () (14 (13 () ()) () ) ) ) )
@@ -128,4 +154,6 @@ x
 (test y )
 (make-bst 5  '( 3 () () ) '( 7 () () )  )
 (proper-tree? '(10 (11 () ()) ()))
+(proper-tree? '(10 (5 () ()) (3 () ())))
+(proper-tree? '(10 (5  ()) (3 () ())))
 (proper-tree? x)
