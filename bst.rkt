@@ -1,84 +1,51 @@
-(define test
-  (lambda (bst)
-    (cond
-      ((equal? bst '())  #f)
+;; 4/8/19
+;; CS 251
+;; Binary Search Trees Assignment
       
-
-     ;; ((equal?( (equal? (number? (car bst)) '(#t)) '(#t))) #t) (equal? (list?  (car (cdr  bst ))) '(#t) ) (equal? (list? (car(cdr (cdr bst))) ) '(#t) ) '(#t)) (#t) )
-      (       (not (= 3 (length  bst)) )  #f     )
-      
-     ;; (  (and  (> (car bst)  (car(car(cdr (cdr bst ) ) ) )  )    (< (car bst) (car (car (cdr  bst ) )) )    )      #f) possible checking if bst if correctly formated
-
-    
-     ( (and (number? (car bst)) (list? (car (cdr  bst ) ))  (list? (car(cdr (cdr bst))) )  ) #t  )
-     ;;((list? bst) #t)
-     (else #f)
-     )
-    )
-  )
-      
-       
-      
-
 ( define entry
   (lambda (currentList  )
     (cond
       ( (not (test currentList ) ) #f)
-      (else (car currentList ) )
-     )
-   )
- )
+      (else (car currentList ) ))))
 
 
 ( define left 
   (lambda (currentList  )
     (cond
       ( (not (test currentList ) ) #f)
-      (else (car (cdr  currentList ) ) )
-    )   
-  )
-)
+      (else (car (cdr  currentList ) ) ))))
 
 
 ( define right 
   (lambda (currentList  )
     (cond
       ( (not (test currentList ) ) #f)
-      (else (car(cdr (cdr currentList ) ) ) )
-    )
-  )
-)
+      (else (car(cdr (cdr currentList ) ) ) ))))
+
+;; helper function for functions entry, left, right. test the structure of the tree.
+(define test
+  (lambda (bst)
+    (cond
+      ((equal? bst '())  #f)
+      ((not (= 3 (length  bst)) ) #f)
+     ( (and (number? (car bst)) (list? (car (cdr  bst ) ))  (list? (car(cdr (cdr bst))) )  ) #t  )
+     (else #f))))
 
 
 (define make-bst
-  (lambda (elt left right)
+  (lambda (elt lft rght)
     (define tree (list elt left right ))
     (cond
-      ((test (list elt left right ) ) (list elt left right  ))
-      (else  #f)
-    )
-  )
-)
+      (( and (test lft) (test rght) (number? elt) ) (list elt lft rght  ) )
+      (else  #f))))
     
-
-
-
-
-
-
-
-
-
  
 ( define preorder
   (lambda (currentList  )
     (cond
       ((null? currentList) '() )
       ;; for each node: it adds the node, the values to the left, and the values to the right
-      (else  (append (list (entry currentList))   ( preorder (left currentList ))    ( preorder (right currentList )) ))
-     )  
-  )
-)
+      (else  (append (list (entry currentList))   ( preorder (left currentList ))    ( preorder (right currentList )) )))))
 
 
 ( define inorder
@@ -86,10 +53,7 @@
     (cond
       ((null? currentList) '() )
       ;; for each node: it adds the values to the left, the node, and the values to the right
-      (else  (append  ( inorder (left currentList ))    (list (entry currentList))    ( inorder (right currentList )) ))
-     )  
-  )
-)
+      (else  (append  ( inorder (left currentList ))    (list (entry currentList))    ( inorder (right currentList )) )))))
 
 
 ( define postorder
@@ -97,128 +61,114 @@
     (cond
       ((null? currentList) '() )
       ;; for each node: it adds the values to the left, the values to the right, and the node
-      (else  (append  ( postorder (left currentList ))   ( postorder (right currentList ))    (list (entry currentList)) ))
-     )  
-  )
-)
+      (else  (append  ( postorder (left currentList ))   ( postorder (right currentList ))    (list (entry currentList)) )))))
 
 
 (define (insert v currentList)
   (cond
-    
     ;; if it hits a leaf, insert bst with the value as its only node
     ((equal? currentList '())   (list v '() '()) )
-
     ((= v (entry currentList))   (list (car currentList)   (car (cdr currentList))    (car (cdr (cdr currentList)))))
-    
     ;;if bigger return a  list of the node, left side of the tree, and call insert on right side
     ((> v (entry currentList))   (list (car currentList)   (car (cdr currentList))   (insert v (car (cdr (cdr currentList))))))
-
     ;; if smaller return a list of the node, call insert of left side, and the right side of the tree,
     (else (list (car currentList)    (insert v (car (cdr currentList)))   (car (cdr (cdr currentList)))))
-  )  
-)
+  ))
 
+;; BONUS POINTS
 
-
-;;(define bst-from-list)
- ;; (lambda(lst)
- ;;(define curentList '())
-    ;;(if (null? lst) currentList)
-    ;;(insert car lst)
-    ;;(bst-from-list (cdr lst))
-   ;;)
- ;;)
-
+(define bst-from-list
+  (lambda (lst)
+    (bst-from-list-helper (reverse lst) )))
 
 (define bst-from-list-helper
   (lambda (lst)
     (cond
-
       ( (= 1 (length lst)) '() (list (car lst) '() '() ) )
+      (else (insert (car lst)  (bst-from-list-helper (cdr lst)) )))))
 
-      (else (insert (car lst)  (bst-from-list-helper (cdr lst)) )
-            )
-      
-      
-    )
-  )
- )
+;; checks if the number of integers in the list correctly match the number of parentheses,
+;; if so it then checks if  the values in a list from an inorder traversal are in accending order. If so the list is an bst.
 
-(define bst-from-list
-  (lambda (lst)
-    (bst-from-list-helper (reverse lst) )
-    )
-  )
-
-
-(define propper-tree?
+(define proper-tree? 
   (lambda (bst)
-  
-
-    
     (cond
-      ( (null? bst) #t)
-      ( (not(list? bst)) #f)
-      ( (not (= 3 (length  bst)))  #f)
-      ;; has no childern
-       ( (and  (equal? (entry (left bst))  '() )   (equal? (entry (right bst))  '() ))   #t )
-         ;; has left child only 
-      ( (and  (number? (entry (left bst)))  (equal? (entry (right bst))  '() )   (and (number? (entry bst))  (and (propper-tree? (left bst))  )) )
-        ;; has right child only 
-      ( (and  (number? (entry (right bst))) (equal? (entry (left bst))  '() ))   (and (number? (entry bst))   (propper-tree? (right bst)))) )
-      ;; has two childern
-      ( (and  (number? (entry (right bst))) (number? (entry (left bst))))     (and (number? (entry bst))  (and (propper-tree? (left bst))  (propper-tree? (right bst))))     )
-      
-    (else #f )))))
+     ( (correct-format-bst bst) (acending-order? (inorder-test bst) ) )
+     (else #f))))
+
+;; helper function checks if values in list are in accending order
+(define (acending-order? bst)
+      (cond
+        ((null? bst) #t)
+        ((eq? (length bst) 1) #t)
+        ((> (car (cdr bst)) (car bst)) (acending-order? (cdr bst)))
+        (else #f)))
+
+;; returns list of values in bst from an inorder traversel without checking format of bst
+( define inorder-test
+  (lambda (currentList  )
+    (cond
+      ((null? currentList) '() )
+      ;; for each node: it adds the values to the left, the node, and the values to the right
+      (else  (append  ( inorder (car (cdr  currentList ) ))    (list (entry currentList))    ( inorder (car(cdr (cdr currentList ) ) ) )) ))))
 
 
-
-(define correct-format
+;; checks if the number of parentheses are correct for the number of intergers in the list
+(define correct-format-bst
   (lambda (bst)
-    
-      
-    
-      (and  (> (car bst)  (entry (left bst))  )    (< (car bst)  (entry (right bst)) )    )
-   )
-)
-  
-      
-      
- 
+    (cond
+      ((equal? bst '()) #f)
+      ((= (/ (- (count-nulls bst) 1) 2) (count-integers bst)) #t)
+      (else #f))))
 
-( define x
-   '(
-  5
-  (3 (12 () ()) (4 () (22 () () )) )
-  (43 () () )
-  
- ))
+;; counts the number of parentheses in the bst
+(define count-nulls
+  ( lambda (bst)
+     (cond
+       ((null? bst) 1)
+       ((integer? bst) 0)
+       ( (+ (count-nulls (car bst)) (count-nulls (cdr bst)))))))
+
+;; counts the number of integers in the list
+ (define count-integers
+  ( lambda (bst)
+     (length (remove-par bst ))))
+
+;; turns the bst into a list of integers
+(define (remove-par bst)
+  (cond ((null? bst) '())
+        ((pair? bst) (append (remove-par  (car bst)) (remove-par  (cdr bst))))
+        (else (list bst))))
+
+;; -------------- TESTS --------------
+( define x  '( 8 (3 (1 () () ) (6 (4 () () ) (7 () ()) ) ) (10 () (14 (13 () ()) () ) ) ) )
+(define bad-tree '(8 () ))
 
 (entry x)
 (left x)
 (right x)
+
+(entry bad-tree)
+(left bad-tree)
+(right bad-tree)
+
+(make-bst 5  '( 3 () () ) '( 7 () () )  )
+(make-bst 5  '( 3 () () ) '(7 () )  )
+
 (preorder x) 
 (inorder x)
 (postorder x)
+
 x
+
 (insert 43 x)
-
-;; 5
-;; (3 (12 () ()) (4 () (22 () ())))
-;; (43 () ())
-;; (5 3 12 4 22 43)
-;; (12 3 4 22 5 43)
-;; (12 22 4 3 43 5)
-;; (5 (3 (12 () ()) (4 () (22 () ()))) (43 () ()))
-;; (5 (3 (12 () ()) (4 () (22 () ()))) (43 (6 () ()) ()))
-
-
+(bst-from-list '(8 3 1 6 4 7 10 14 13 43))
+(bst-from-list '(8 3 1 6 4 7 10 14 13))
 
 (define y '(5 () () ) )
 (test y )
-(make-bst 5  '( 3 () () ) '( 7 () () )  )
+(proper-tree? '(10 (11 () ()) ()))
+(proper-tree? '(10 (5 () ()) (3 () ())))
+(proper-tree? '(10 (5  ()) (3 () ())))
+(proper-tree? x)
 
-(bst-from-list '(4 10 2))
-
-(propper-tree? '(10 (22 () ()) ()))
