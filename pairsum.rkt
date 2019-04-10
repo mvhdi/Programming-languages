@@ -53,24 +53,39 @@
 
 (define make-lazy
   (lambda (lst)
-    (gen-lazy-list (apply min lst) (apply max lst))))
+    (lazy-list-from-lst lst)))
 
+
+(define lazy-list-from-lst
+  (lambda (lst)
+    (if (null? lst)
+        #f
+        (cons (car lst)
+            (lambda ()
+              (lazy-list-from-lst (cdr lst)))))))
 
 (define any-sum-lazy?
   (lambda (lazy-list val)
     (cond
       ((equal? lazy-list #f) #f)
       ((> (car lazy-list ) val) #f)
-      (else (any-sum-lazy-helper (car lazy-list) val (call-lazy-list lazy-list ))))))
+      (else (any-sum-lazy-helper '() val (call-lazy-list lazy-list ))))))
 
 (define any-sum-lazy-helper
-  (lambda (start target lst)
+  (lambda (values-seen target lst)
     (cond
       ((equal? lst #f) #f)
       (else (or
-               (and (>= (- target (car lst)) start ) (< (- target (car lst)) (car lst)))
-               (any-sum-lazy-helper start target (call-lazy-list lst)))))))
+               (member-helper (- target (car lst)) values-seen )
+               (any-sum-lazy-helper (cons (car lst) values-seen) target (call-lazy-list lst)))))))
 
 
+(define member-helper
+  (lambda (val lst)
+    (define statement (member val lst ) )
+    (cond
+      ((equal? statement #f ) #f)
+      (else #t))))
+      
 
 
