@@ -40,7 +40,7 @@
     ((< (length (reverse (first-n lazy-list n))) n) #f)
     (else (car (reverse (first-n lazy-list n)))))))
 
-;; This function takes two values and checks if the first value can be evenly diveded by the second value. 
+;; This helper function takes two values and checks if the first value can be evenly diveded by the second value. 
 (define is-multiple
   (lambda (val1)
     (lambda (val2)
@@ -51,31 +51,24 @@
 ;; This function returns a new lazy list that has n and all integer multiples of n removed from lazy-list.
 (define filter-multiples
   (lambda (lazy-list n)
-   (make-lazy (filter  (is-multiple-2 n ) (return-all lazy-list) ) )))
+   (lazy-list-from-lst (filter  (is-multiple-2 n ) (return-all lazy-list)))))
 
-
+;; This helper function is like is-mulitple but swaps true and false
 (define is-multiple-2
   (lambda (val1)
     (lambda (val2)
     (cond
       ((integer? (/ val2 val1)) #f)
-      (else #t)
-     ))))
+      (else #t)))))
 
+;; This helper  function turns a lazy-list into a list
 (define return-all
   (lambda (lazy-list)
     (cond
       ((equal? lazy-list #f) '())
-      (else (append (list (car lazy-list)) (return-all (call-lazy-list lazy-list))) )
+      (else (append (list (car lazy-list)) (return-all (call-lazy-list lazy-list)))))))
 
-    )))
-
-
-(define make-lazy
-  (lambda (lst)
-    (lazy-list-from-lst lst)))
-
-
+;; This helper function turns a list into a lazy-list
 (define lazy-list-from-lst
   (lambda (lst)
     (if (null? lst)
@@ -84,25 +77,26 @@
             (lambda ()
               (lazy-list-from-lst (cdr lst)))))))
 
-
-;; 
+;; This function computes a lazy list containing all prime numbers
 (define primes
   (lambda ()
     (primes-helper 2 '() )))
 
+;; This helper function creates a lazy list of prime numbers
 (define primes-helper
   (lambda (start lst)
         (cons (car (prime-finder start lst))
             (lambda ()
               (primes-helper (+ (car (prime-finder start lst)) 1) (prime-finder start lst))))))
 
+;; This helper function finds the next prime number
 (define prime-finder
   (lambda (start lst)
     (cond
       ((check-prime start lst) (append (list start) lst))
       (else (prime-finder (+ start 1) lst)))))
 
-
+;; This function checks if a value is prime by checking if it is divisiable by any prime integer less than it.
 (define check-prime
   (lambda (val lst)
     (cond
@@ -122,6 +116,6 @@
 (check-prime 4 '(3 2))
 (first-n (primes) 10)
 (nth (primes) 20)
-
 (filter-multiples x 2)
-(filter-multiples x 3) 
+(filter-multiples x 3)
+(first-n (filter-multiples x 2) 5)
